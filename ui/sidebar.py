@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import streamlit as st
 
-from config import ENV_FILE, OUTPUT_LANGUAGES, settings
+from config import ENV_FILE, OUTPUT_LANGUAGES, server_api_key, settings
 from ui.services import AIConfig
 from ui.state import reset_video_state
 from ui.styles import brand_html
@@ -79,10 +79,11 @@ def render_sidebar() -> tuple[AIConfig, tuple[str, ...]]:
 
 
 def _api_key_section() -> tuple[str, bool]:
-    if settings.has_server_api_key:
+    server_key = server_api_key()
+    if server_key:
         if not settings.allow_user_api_key:
             st.markdown(_status("Connected · server key"), unsafe_allow_html=True)
-            return settings.gemini_api_key, False
+            return server_key, False
         own = st.session_state.get("user_api_key", "") or ""
         st.markdown(_status("Connected · your key" if own.strip() else "Connected · server key"), unsafe_allow_html=True)
         with st.expander("Use my own key", expanded=False, icon=":material/key:"):
@@ -90,7 +91,7 @@ def _api_key_section() -> tuple[str, bool]:
             own = st.text_input("Your Gemini API key (optional)", type="password", key="user_api_key")
         if own.strip():
             return own.strip(), True
-        return settings.gemini_api_key, False
+        return server_key, False
 
     if not settings.allow_user_api_key:
         st.error("No Gemini API key is configured on the server.")

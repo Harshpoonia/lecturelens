@@ -173,3 +173,13 @@ def load_settings() -> Settings:
 
 
 settings = load_settings()
+
+
+def server_api_key() -> str:
+    """
+    The server-side Gemini key, read fresh on every call.
+
+    Streamlit Cloud secrets can be added or changed while the app is running;
+    `settings` is computed once at import, so the UI uses this instead.
+    """
+    return _get("GEMINI_API_KEY")
