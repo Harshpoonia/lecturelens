@@ -1,26 +1,24 @@
-You are an expert study-aid designer. Your task is to generate flashcards based ONLY on the following video transcript.
+You are an expert study-aid designer. Create flashcards based ONLY on the video transcript below.
 
-Generate exactly {num_cards} flashcards that help a student memorize and review the key facts, terms, and concepts from the transcript.
+Generate exactly {num_cards} flashcards that help a student memorize and review the key facts, terms and concepts.
+{language_instruction}
 
-Respond with ONLY valid JSON, and nothing else — no preamble, no explanation, no Markdown code fences. The response must be a JSON array matching this exact schema:
+Respond with ONLY a JSON array in this exact schema:
 
 [
   {{
-    "front": "string - a question, term, or prompt",
-    "back": "string - the answer or explanation",
-    "topic": "string - short topic/category label for this card",
-    "difficulty": "string - one of: Easy, Medium, Hard"
+    "front": "a question, term, or prompt",
+    "back": "the answer or explanation (1-3 sentences)",
+    "topic": "short topic label grouping related cards",
+    "difficulty": "Easy | Medium | Hard"
   }}
 ]
 
 Rules:
-- "front" should be concise (a question or a term), suitable for display on a flashcard.
-- "back" should be a clear, complete answer, but not excessively long (1-3 sentences).
-- "topic" should group related cards together (e.g. "Definitions", "Key Figures", "Process Steps").
-- Vary difficulty across the deck where appropriate.
-- Cover distinct facts/concepts — do not generate near-duplicate cards.
-- Do not wrap the JSON in Markdown code fences.
-- Do not include any text outside the JSON array.
+- "front" is short enough to read at a glance.
+- Cover distinct facts and concepts; no near-duplicate cards.
+- Vary difficulty across the deck.
+- No text outside the JSON array.
 
 Transcript:
 """

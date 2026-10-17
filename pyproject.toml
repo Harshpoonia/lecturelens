@@ -1,0 +1,17 @@
+[project]
+name = "lecturelens"
+version = "3.0.0"
+description = "Turn YouTube videos into study notes, quizzes, flashcards and an AI tutor (Streamlit + Google Gemini)."
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "UP"]
+ignore = ["E501", "E731", "B008", "B905"]

@@ -1,26 +1,31 @@
-You are an expert educational content creator. Your task is to transform the following video transcript into clear, structured learning material.
+You are an expert educational content creator. Transform the video transcript below into clear, structured learning material for a student meeting this topic for the first time.
 
-Use the transcript content only. Do not invent facts that are not supported by the transcript.
+Use only the transcript. Do not invent facts it does not support.
+{language_instruction}
 
-Produce Markdown output using EXACTLY these four top-level headings, in this order:
+The transcript may contain timestamp markers like [04:12]. They show when that part of the video starts.
+
+Produce Markdown using EXACTLY these top-level headings, in this order:
 
 # Executive Summary
-A concise 3-5 sentence overview of what this video covers and why it matters.
+A concise 3-5 sentence overview of what the video covers and why it matters.
 
 # Key Points
-A bulleted list of the most important takeaways from the video (aim for 5-10 points).
+A bulleted list of the 5-10 most important takeaways.
 
 # Study Notes
-Detailed, well-organized notes a student could use to study this material. You may use nested headings (##, ###) and sub-bullets within this section, but do not introduce any additional top-level (#) headings.
+Detailed, well-organized notes a student could revise from. You may use nested headings (##, ###), sub-bullets, short examples and tables inside this section, but no additional top-level (#) headings. Where helpful, end a sub-section with the timestamp it comes from, e.g. (see [04:12]).
 
 # Important Concepts
-A bulleted list of key terms, definitions, or concepts introduced in the video. Format each as **Term**: definition.
+A bulleted list of key terms. Format each as **Term**: definition.
+
+# Video Chapters
+{chapters_instruction}
 
 Rules:
-- Only use the four top-level headings listed above, each starting with a single "#".
-- Do not add any other top-level headings.
-- Do not include any text before "# Executive Summary" or after the end of "# Important Concepts".
-- Write in clear, educational language suitable for a student learning this topic for the first time.
+- Every top-level heading starts with a single "#". Do not add other top-level headings.
+- No text before "# Executive Summary".
+- Keep the heading text itself in English exactly as written above, even when writing the content in another language.
 
 Transcript:
 """

@@ -1,49 +1,35 @@
 """
 modules/flashcard_service.py
 
-FlashcardService is responsible for:
-- Loading the flashcard prompt template
-- Sending the transcript to Gemini via AIService
-- Returning a list of Flashcard objects
-
-This service is intentionally independent of QuizService — it has
-its own prompt, its own parser, and its own model, per the v2.2
-requirement that flashcards do not reuse quiz code.
+Generates a flashcard deck from a transcript. Independent of QuizService:
+own prompt, own parser, own model.
 """
+
+from __future__ import annotations
 
 from config import settings
 from models.flashcard import Flashcard
 from models.transcript import TranscriptData
 from modules.ai_service import AIService
 from utils.flashcard_parser import parse_flashcard_json
-from utils.prompt_loader import load_prompt
-from utils.text_cleaning import truncate_text
+from utils.prompt_loader import language_instruction, load_prompt
 
 
 class FlashcardService:
-    """Generates a flashcard deck from a transcript."""
-
-    def __init__(self, ai_service: AIService | None = None) -> None:
-        self._ai_service = ai_service or AIService()
+    def __init__(self, ai_service: AIService) -> None:
+        self._ai = ai_service
 
     def generate_flashcards(
-        self, transcript_data: TranscriptData, num_cards: int = 10
+        self, transcript: TranscriptData, num_cards: int = 10, output_language: str = ""
     ) -> list[Flashcard]:
-        """
-        Generate a list of flashcards from a transcript.
-
-        Raises ValueError if Gemini's output cannot be parsed into
-        the expected JSON schema.
-        """
-        transcript_text = truncate_text(
-            transcript_data.cleaned_text, settings.max_transcript_chars
-        )
-
         prompt = load_prompt(
             "flashcard_prompt.txt",
-            transcript=transcript_text,
-            num_cards=str(num_cards),
+            transcript=transcript.timestamped_text(settings.max_transcript_chars),
+            num_cards=num_cards,
+            language_instruction=language_instruction(output_language),
         )
-        raw_response = self._ai_service.generate(prompt, temperature=0.7)
-
-        return parse_flashcard_json(raw_response)
+        try:
+            cards = parse_flashcard_json(self._ai.generate(prompt, json_mode=True))
+        except ValueError:
+            cards = parse_flashcard_json(self._ai.generate(prompt, json_mode=True))
+        return cards[:num_cards]

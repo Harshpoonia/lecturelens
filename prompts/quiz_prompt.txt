@@ -1,25 +1,30 @@
-You are an expert quiz designer. Your task is to generate a multiple-choice quiz based ONLY on the following video transcript.
+You are an expert quiz designer. Write a multiple-choice quiz based ONLY on the video transcript below.
 
-Generate exactly {num_questions} quiz questions that test understanding of the key concepts in the transcript.
+Generate exactly {num_questions} questions that test understanding (not trivia) of the key ideas.
+Difficulty: {difficulty}
+{language_instruction}
 
-Respond with ONLY valid JSON, and nothing else — no preamble, no explanation, no Markdown code fences. The response must be a JSON array matching this exact schema:
+The transcript may contain timestamp markers like [04:12]. For each question, set "timestamp" to the marker nearest to where the answer is explained, or null if there are no markers.
+
+Respond with ONLY a JSON array in this exact schema:
 
 [
   {{
     "question": "string",
     "options": ["string", "string", "string", "string"],
     "correct_answer": "string (must exactly match one of the options)",
-    "explanation": "string explaining why the correct answer is correct"
+    "explanation": "1-2 sentences explaining why the answer is correct",
+    "difficulty": "Easy | Medium | Hard",
+    "timestamp": "mm:ss or null"
   }}
 ]
 
 Rules:
-- Each question must have exactly 4 options.
-- "correct_answer" must be an exact string match to one of the 4 options.
-- Questions should cover different parts of the transcript, not just the beginning.
-- Avoid trick questions or ambiguous wording.
-- Do not wrap the JSON in Markdown code fences.
-- Do not include any text outside the JSON array.
+- Exactly 4 distinct, plausible options per question; only one is correct.
+- "correct_answer" must be copied exactly from the options.
+- Spread questions across the whole transcript, not just the beginning.
+- No trick questions, no "all of the above" / "none of the above".
+- No text outside the JSON array.
 
 Transcript:
 """

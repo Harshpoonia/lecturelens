@@ -1,0 +1,16 @@
+# One-click deploy on Render: New → Blueprint → select this repo.
+services:
+  - type: web
+    name: lecturelens
+    runtime: docker
+    plan: free
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false          # set in the Render dashboard
+      - key: GEMINI_MODEL
+        value: gemini-3.5-flash
+      - key: SESSION_AI_CALL_LIMIT
+        value: "40"
+      - key: ALLOW_USER_API_KEY
+        value: "true"

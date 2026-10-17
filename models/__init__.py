@@ -1,20 +1,20 @@
 """
-models package
-
-Exposes all data models used across the application.
-Models contain only structure — never business logic.
+models package — plain data structures shared across the app.
 """
 
-from models.flashcard import Flashcard, FlashcardDeckState
-from models.learning_content import LearningContent
-from models.quiz import QuizQuestion, QuizState
-from models.transcript import TranscriptData
+from models.chat import ChatMessage
+from models.flashcard import Flashcard
+from models.learning_content import Chapter, LearningContent
+from models.quiz import QuizAnswer, QuizQuestion
+from models.transcript import TranscriptData, TranscriptSegment
 
 __all__ = [
-    "TranscriptData",
-    "QuizQuestion",
-    "QuizState",
-    "LearningContent",
+    "Chapter",
+    "ChatMessage",
     "Flashcard",
-    "FlashcardDeckState",
+    "LearningContent",
+    "QuizAnswer",
+    "QuizQuestion",
+    "TranscriptData",
+    "TranscriptSegment",
 ]

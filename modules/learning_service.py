@@ -1,43 +1,47 @@
 """
 modules/learning_service.py
 
-LearningService is responsible for:
-- Loading the learning prompt template
-- Sending the transcript to Gemini via AIService
-- Returning structured LearningContent
-
-Markdown parsing is delegated to utils/markdown_parser.py.
-Prompt text itself lives in prompts/learning_prompt.txt.
+Generates Executive Summary, Key Points, Study Notes, Important Concepts
+and (when timing data exists) Video Chapters from a transcript.
 """
+
+from __future__ import annotations
 
 from config import settings
 from models.learning_content import LearningContent
 from models.transcript import TranscriptData
 from modules.ai_service import AIService
 from utils.markdown_parser import parse_learning_markdown
-from utils.prompt_loader import load_prompt
-from utils.text_cleaning import truncate_text
+from utils.prompt_loader import language_instruction, load_prompt
+
+_CHAPTERS_WITH_TIMESTAMPS = (
+    "A bulleted list of 4-10 chapters covering the whole video, one per line, formatted exactly as "
+    "`- [mm:ss] Chapter title`, using only timestamp markers that appear in the transcript."
+)
+_CHAPTERS_WITHOUT_TIMESTAMPS = "Write exactly: - No timestamps available."
 
 
 class LearningService:
-    """Generates structured learning material from a transcript."""
+    def __init__(self, ai_service: AIService) -> None:
+        self._ai = ai_service
 
-    def __init__(self, ai_service: AIService | None = None) -> None:
-        self._ai_service = ai_service or AIService()
-
-    def generate_learning_content(self, transcript_data: TranscriptData) -> LearningContent:
-        """
-        Generate Executive Summary, Key Points, Study Notes, and
-        Important Concepts from a transcript.
-
-        Raises ValueError if Gemini's output cannot be parsed into
-        the expected section structure.
-        """
-        transcript_text = truncate_text(
-            transcript_data.cleaned_text, settings.max_transcript_chars
+    def generate_learning_content(
+        self, transcript: TranscriptData, output_language: str = ""
+    ) -> LearningContent:
+        prompt = load_prompt(
+            "learning_prompt.txt",
+            transcript=transcript.timestamped_text(settings.max_transcript_chars),
+            language_instruction=language_instruction(output_language),
+            chapters_instruction=(
+                _CHAPTERS_WITH_TIMESTAMPS if transcript.has_timestamps else _CHAPTERS_WITHOUT_TIMESTAMPS
+            ),
         )
-
-        prompt = load_prompt("learning_prompt.txt", transcript=transcript_text)
-        raw_markdown = self._ai_service.generate(prompt, temperature=0.5)
-
-        return parse_learning_markdown(raw_markdown)
+        raw_markdown = self._ai.generate(prompt)
+        try:
+            return parse_learning_markdown(raw_markdown)
+        except ValueError:
+            # One retry: models occasionally drift from the heading format.
+            raw_markdown = self._ai.generate(
+                prompt + "\n\nIMPORTANT: Use the exact top-level headings listed above."
+            )
+            return parse_learning_markdown(raw_markdown)

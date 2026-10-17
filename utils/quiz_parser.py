@@ -1,68 +1,91 @@
 """
 utils/quiz_parser.py
 
-Parses Gemini's JSON quiz output into QuizQuestion model objects.
-Handles minor formatting issues (e.g. accidental Markdown code
-fences) that LLMs sometimes add despite instructions not to.
+Parses Gemini's JSON quiz output into QuizQuestion objects.
+
+Lenient about harmless deviations (code fences, a wrapper object,
+"B" instead of the option text for the answer) and strict about real
+schema problems (wrong option count, answer not among the options).
 """
 
-import json
-import re
+from __future__ import annotations
 
 from models.quiz import QuizQuestion
+from utils.json_utils import extract_json_list
+from utils.time_utils import parse_timestamp
 
-_CODE_FENCE_PATTERN = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
+_LETTERS = "ABCD"
 
 
 def parse_quiz_json(raw_response: str) -> list[QuizQuestion]:
-    """
-    Parse raw JSON text (possibly wrapped in Markdown code fences)
-    into a list of QuizQuestion objects.
-
-    Raises ValueError if the response cannot be parsed or does not
-    match the expected schema.
-    """
-    cleaned = _strip_code_fences(raw_response).strip()
-
     try:
-        data = json.loads(cleaned)
-    except json.JSONDecodeError as exc:
+        data = extract_json_list(raw_response, preferred_keys=("questions", "quiz"))
+    except ValueError as exc:
         raise ValueError(f"Failed to parse quiz JSON from Gemini: {exc}") from exc
 
-    if not isinstance(data, list):
-        raise ValueError("Expected quiz JSON to be a list of question objects.")
-
     questions: list[QuizQuestion] = []
+    errors: list[str] = []
     for i, item in enumerate(data):
         try:
             questions.append(_parse_question(item))
-        except (KeyError, TypeError) as exc:
-            raise ValueError(f"Malformed quiz question at index {i}: {exc}") from exc
+        except (KeyError, TypeError, ValueError) as exc:
+            errors.append(f"question {i + 1}: {exc}")
 
     if not questions:
-        raise ValueError("Gemini returned an empty quiz question list.")
+        detail = f" ({'; '.join(errors[:3])})" if errors else ""
+        raise ValueError(f"Gemini returned no usable quiz questions{detail}.")
 
     return questions
 
 
 def _parse_question(item: dict) -> QuizQuestion:
-    options = item["options"]
-    if not isinstance(options, list) or len(options) != 4:
-        raise ValueError(f"Expected exactly 4 options, got: {options}")
+    if not isinstance(item, dict):
+        raise TypeError("question is not an object")
 
-    correct_answer = item["correct_answer"]
-    if correct_answer not in options:
-        raise ValueError(
-            f"correct_answer '{correct_answer}' does not match any option in {options}"
-        )
+    question = str(item["question"]).strip()
+    options = [str(option).strip() for option in item["options"]]
+    if len(options) != 4:
+        raise ValueError(f"expected exactly 4 options, got {len(options)}")
+    if len(set(options)) != 4:
+        raise ValueError("options are not unique")
+
+    correct_answer = _resolve_answer(item.get("correct_answer", item.get("answer")), options)
+
+    timestamp = item.get("timestamp")
+    timestamp_seconds = parse_timestamp(str(timestamp)) if timestamp else None
 
     return QuizQuestion(
-        question=item["question"],
+        question=question,
         options=options,
         correct_answer=correct_answer,
-        explanation=item.get("explanation", ""),
+        explanation=str(item.get("explanation", "")).strip(),
+        difficulty=str(item.get("difficulty", "")).strip() or None,
+        timestamp_seconds=timestamp_seconds,
     )
 
 
-def _strip_code_fences(text: str) -> str:
-    return _CODE_FENCE_PATTERN.sub("", text)
+def _resolve_answer(raw_answer: object, options: list[str]) -> str:
+    if raw_answer is None:
+        raise KeyError("correct_answer")
+
+    if isinstance(raw_answer, int) and 0 <= raw_answer < len(options):
+        return options[raw_answer]
+
+    answer = str(raw_answer).strip()
+    for option in options:
+        if option == answer or option.casefold() == answer.casefold():
+            return option
+
+    # "B", "B)", "(B)", "Option B"
+    letter = answer.upper().replace("OPTION", "").strip(" ().:")
+    if len(letter) == 1 and letter in _LETTERS:
+        return options[_LETTERS.index(letter)]
+
+    # "B) Some text" — strip a leading letter label and retry.
+    if len(answer) > 3 and answer[0].upper() in _LETTERS and answer[1] in ").:":
+        stripped = answer[2:].strip()
+        for option in options:
+            if option.casefold() == stripped.casefold():
+                return option
+
+    raise ValueError(f"correct_answer '{answer}' does not match any option")

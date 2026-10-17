@@ -1,0 +1,10 @@
+Transcribe the spoken content of this video as accurately as possible.
+
+Output format, and nothing else:
+- First line: LANGUAGE: <language name> (<ISO 639-1 code>)
+- Then one line roughly every 20-40 seconds, each starting with the timestamp in square brackets: [mm:ss] spoken words...
+
+Rules:
+- Transcribe speech in its original language; do not translate or summarize.
+- Omit music, sound effects and long silences.
+- If the video has no speech, describe the on-screen teaching content in the same timestamped format.

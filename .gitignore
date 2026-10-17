@@ -1,68 +1,35 @@
-# ==========================
 # Python
-# ==========================
 __pycache__/
 *.py[cod]
-*$py.class
+*.egg-info/
+build/
+dist/
 
-# Virtual Environment
+# Virtual environments
 venv/
+.venv/
+
+# Secrets — never commit
 .env
 .env.*
-
-# Environment Example (keep tracked)
 !.env.example
+.streamlit/secrets.toml
 
-# ==========================
-# IDE
-# ==========================
+# IDE / OS
 .vscode/
 .idea/
-
-# ==========================
-# Operating System
-# ==========================
 .DS_Store
 Thumbs.db
 
-# ==========================
-# Python Build / Packaging
-# ==========================
-build/
-dist/
-*.egg-info/
-
-# ==========================
-# Logs
-# ==========================
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 *.log
 
-# ==========================
-# Streamlit
-# ==========================
-.streamlit/secrets.toml
-
-# ==========================
-# Generated Project Output
-# ==========================
+# Generated output
 output/
 generated/
 temp/
-
-# ==========================
-# Jupyter
-# ==========================
-.ipynb_checkpoints/
-
-# ==========================
-# Testing / Coverage
-# ==========================
-.pytest_cache/
-.coverage
-htmlcov/
-
-# ==========================
-# Misc
-# ==========================
-*.tmp
-*.bak
+*.mp3

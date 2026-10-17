@@ -1,0 +1,7 @@
+Conversation so far:
+{history}
+
+Tutor mode for this answer: {mode_instruction}
+
+Student: {question}
+Tutor:

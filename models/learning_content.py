@@ -1,22 +1,27 @@
 """
 models/learning_content.py
 
-Data model representing parsed AI-generated learning content
-(Executive Summary, Key Points, Study Notes, Important Concepts).
-Contains no business logic — only structure.
+Parsed AI-generated learning content.
 """
 
-from dataclasses import dataclass
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+
+@dataclass(frozen=True)
+class Chapter:
+    seconds: int
+    title: str
 
 
 @dataclass
 class LearningContent:
-    """Represents structured learning material derived from a transcript."""
-
     executive_summary: str
     key_points: str
     study_notes: str
     important_concepts: str
+    chapters: list[Chapter] = field(default_factory=list)
 
     def as_dict(self) -> dict[str, str]:
         return {
