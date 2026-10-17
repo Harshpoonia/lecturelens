@@ -1,9 +1,7 @@
 """
-modules package
+modules package — business logic services.
 
-Contains business logic services: AIService, LearningService,
-QuizService, FlashcardService, and the transcript module.
-
-app.py should only ever call into these services — never contain
-prompt logic, parsing logic, or direct Gemini calls itself.
+AIService (Gemini), LearningService, QuizService, FlashcardService,
+ChatService, transcript fetching, Gemini video transcription, export
+and text-to-speech. The UI (app.py + ui/) only calls into these.
 """

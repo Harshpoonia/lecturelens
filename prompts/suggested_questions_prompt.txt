@@ -1,0 +1,9 @@
+Read the video transcript below and suggest {num_questions} short, interesting questions a student might ask a tutor about this video. Mix factual, conceptual and "why/how" questions. Each question must be under 15 words.
+{language_instruction}
+
+Respond with ONLY a JSON array of strings.
+
+Transcript:
+"""
+{transcript}
+"""

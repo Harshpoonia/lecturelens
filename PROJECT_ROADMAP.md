@@ -1,288 +1,81 @@
-# 🚀 PROJECT ROADMAP
+# 🚀 Project Roadmap — LectureLens
 
-# YouTube AI Learning Assistant
+## 🎯 Vision
+A production-quality learning platform that turns YouTube videos into material students can **learn, revise, practise and interact with** — not just summaries.
 
-## 🎯 Project Vision
-
-Build a production-quality AI-powered learning platform that transforms YouTube videos into structured educational resources using Generative AI.
-
-The platform is designed to help users **learn, revise, practice, and interact** with educational content rather than simply summarize videos.
+**Current version:** v3.0 · **Status:** 🟢 Deployable · **Architecture:** modular, service-oriented
 
 ---
 
-# 📌 Current Status
+## ✅ v1.0 — Foundation
+- [x] YouTube video summarizer, transcript extraction, basic Streamlit UI
 
-**Current Version:** **v2.2**
+## ✅ v2.0 – v2.2 — Learning platform
+- [x] Modular service architecture, AI service layer, prompt files, data models
+- [x] Executive summary, key points, study notes, important concepts
+- [x] Interactive quiz (JSON parser, feedback, explanations, score)
+- [x] Flashcards (own service, parser, model, navigation)
+- [x] Centralized configuration and error handling
 
-**Status:** 🟢 Active Development
+## ✅ v3.0 — Chat, accessibility, production readiness
 
-**Architecture:** Modular Service-Oriented Architecture
+### Reliability fixes
+- [x] Default model moved off retired `gemini-2.0-flash` (shut down 2026-06-01) to `gemini-3.5-flash`
+- [x] App no longer crashes on start without a key; reads Streamlit secrets as well as `.env`
+- [x] Captions in **any language** (was English-only), with preferred-language ranking
+- [x] Robust URL parsing (watch, youtu.be, shorts, embed, live, mobile)
+- [x] Gemini retries with backoff; precise error codes (bad key, retired model, daily quota, rate limit, overload, safety block)
+- [x] Tolerant parsers (code fences, wrapper objects, "B" as an answer, forgiving headings)
+- [x] Flashcard HTML escaped (model output could inject markup)
+- [x] Transcript analytics in the README now actually shown in the UI
 
----
+### Chat with video (was v2.3)
+- [x] Ask questions about the video · context-aware, multi-turn · conversation history
+- [x] Suggested questions · source-aware answers with clickable timestamps · streaming
+- [x] AI tutor modes: Explain · ELI5 · Examples · Compare · Practice questions
 
-# ✅ Version 1.0 — Foundation (Completed)
+### Export & accessibility (was v2.4)
+- [x] PDF / HTML / Markdown study pack · quiz report · flashcard export (Anki) · chat export
+- [x] Text-to-speech: summary, key points, notes, concepts, flashcards
+- [x] Transcript download (.txt / .srt)
 
-## Initial Project
+### Smarter learning (part of v2.5)
+- [x] Quiz difficulty selection · retry missed questions · review mistakes
+- [x] Flashcards: known / still learning, review-only-unknown mode
+- [x] Video chapters + timestamp navigation
+- [x] Output in another language than the video
+- [x] Recent videos in the session (instant reload from cache)
 
-* [x] YouTube Video Summarizer
-* [x] Transcript Extraction
-* [x] Basic Streamlit Interface
-* [x] AI Summary Generation
-* [x] Initial Project Structure
-
----
-
-# ✅ Version 2.0 — AI Learning Platform (Completed)
-
-## Architecture
-
-* [x] Modular Project Structure
-* [x] Service-Oriented Architecture
-* [x] AI Service Layer
-* [x] Learning Service
-* [x] Prompt Management
-* [x] Transcript Data Model
-* [x] Markdown Parser
-* [x] Environment Configuration
-
----
-
-## Transcript Processing
-
-* [x] YouTube Transcript Extraction
-* [x] Automatic Language Detection
-* [x] Word Count
-* [x] Character Count
-* [x] Reading Time Estimation
-* [x] Transcript Analytics Dashboard
-
----
-
-## AI Learning Content
-
-* [x] Executive Summary
-* [x] Key Points
-* [x] Detailed Study Notes
-* [x] Important Concepts
-* [x] Google Gemini Integration
+### Production readiness (part of v3.0)
+- [x] Gemini video transcription fallback when YouTube blocks the server · paste-transcript mode
+- [x] Bring-your-own-key + per-session request cap
+- [x] Response caching (transcripts + every generation)
+- [x] Dockerfile, Render blueprint, Streamlit Cloud config
+- [x] Unit + service + export tests, Streamlit AppTest smoke test, GitHub Actions CI
+- [x] Logging
 
 ---
 
-## Dashboard
-
-* [x] Multi-Tab Interface
-* [x] Transcript Viewer
-* [x] Analytics Cards
-* [x] Error Handling
-
----
-
-# ✅ Version 2.1 — Interactive Quiz (Completed)
-
-## Quiz Engine
-
-* [x] Quiz Service
-* [x] Quiz Model
-* [x] Quiz Prompt
-* [x] JSON Quiz Parser
-
----
-
-## Quiz Features
-
-* [x] AI-generated Multiple Choice Questions
-* [x] Four Options Per Question
-* [x] One Question at a Time
-* [x] Submit Answer
-* [x] Instant Feedback
-* [x] Answer Explanation
-* [x] Progress Tracking
-* [x] Final Score
-* [x] Session State Support
-
----
-
-# ✅ Version 2.2 — Flashcards & Architecture Refactor (Completed)
-
-## Flashcards
-
-* [x] Flashcard Service
-* [x] Flashcard Model
-* [x] Flashcard Prompt
-* [x] Flashcard Parser
-* [x] AI-generated Flashcards
-* [x] Interactive Flashcard UI
-* [x] Sequential Navigation
-
----
-
-## Major Refactor
-
-* [x] Centralized Configuration (`config.py`)
-* [x] Dedicated AI Service
-* [x] Improved Folder Structure
-* [x] Centralized Prompt Loading
-* [x] Better Error Handling
-* [x] Improved Session State Management
-* [x] Cleaner Separation of Concerns
-* [x] Refactored Business Logic
-* [x] Reusable Utility Modules
-
----
-
-# 🚧 Version 2.3 — AI Chat with Video
-
-## Chat Experience
-
-* [ ] Ask Questions About the Video
-* [ ] Context-Aware Responses
-* [ ] Multi-turn Conversations
-* [ ] Conversation History
-* [ ] Suggested Questions
-* [ ] Source-aware Responses
-
----
-
-## AI Tutor
-
-* [ ] Explain Concepts
-* [ ] Explain Like I'm 5
-* [ ] Give Examples
-* [ ] Compare Concepts
-* [ ] Create Practice Questions
-
----
-
-# 🚧 Version 2.4 — Export & Accessibility
-
-## Export
-
-* [ ] PDF Export
-* [ ] Study Notes Export
-* [ ] Quiz Report
-* [ ] Flashcard Export
-
----
-
-## Accessibility
-
-* [ ] Text-to-Speech
-* [ ] Audio Summary
-* [ ] Audio Study Notes
-* [ ] Audio Flashcards
-
----
-
-# 🚧 Version 2.5 — Smarter Learning
-
-## Personal Learning
-
-* [ ] Bookmark Concepts
-* [ ] Save Learning Sessions
-* [ ] Learning History
-* [ ] Resume Previous Sessions
-
----
-
-## AI Improvements
-
-* [ ] Adaptive Quiz Difficulty
-* [ ] Personalized Flashcards
-* [ ] Topic Recommendations
-* [ ] Smart Revision Mode
-
----
-
-# 🚧 Version 3.0 — Complete AI Learning Platform
-
-## User Experience
-
-* [ ] User Authentication
-* [ ] User Profiles
-* [ ] Personalized Dashboard
-* [ ] Learning Streaks
-* [ ] Achievements
-
----
-
-## Intelligent Learning
-
-* [ ] RAG-based Question Answering
-* [ ] Semantic Transcript Search
-* [ ] Personalized AI Tutor
-* [ ] Learning Progress Analytics
-
----
-
-## Production Readiness
-
-* [ ] Docker Support
-* [ ] CI/CD Pipeline
-* [ ] Automated Testing
-* [ ] Logging & Monitoring
-* [ ] Caching Layer
-* [ ] Deployment to Cloud
-
----
-
-# 🔧 Technical Improvements
-
-## Reliability
-
-* [ ] Better Gemini API Retry Logic
-* [ ] Quota-aware Request Handling
-* [ ] Intelligent Response Caching
-* [ ] API Health Monitoring
-
----
-
-## Performance
-
-* [ ] Transcript Chunking for Long Videos
-* [ ] Optimized Prompt Token Usage
-* [ ] Faster Parsing
-* [ ] Background Processing
-
----
-
-## Testing
-
-* [ ] Unit Tests
-* [ ] Integration Tests
-* [ ] End-to-End Tests
-* [ ] GitHub Actions Workflow
-
----
-
-# 📈 Development Timeline
-
-| Version | Status         |
-| ------- | -------------- |
-| v1.0    | ✅ Completed    |
-| v2.0    | ✅ Completed    |
-| v2.1    | ✅ Completed    |
-| v2.2    | ✅ Completed    |
-| v2.3    | 🚧 In Progress |
-| v2.4    | 📅 Planned     |
-| v2.5    | 📅 Planned     |
-| v3.0    | 🎯 Vision      |
-
----
-
-# 🎯 Long-Term Vision
-
-The goal is to evolve this project from a simple **YouTube Video Summarizer** into a **comprehensive AI-powered learning platform**.
-
-The completed platform will enable users to:
-
-* 📺 Learn from any educational YouTube video
-* 📝 Generate structured study material
-* 🧠 Understand important concepts
-* ❓ Test knowledge with AI-generated quizzes
-* 🗂️ Revise using AI-generated flashcards
-* 💬 Chat with an AI tutor using transcript context
-* 📄 Export learning materials
-* 🔊 Listen to AI-generated study content
-* 📈 Track learning progress over time
-
-This project also serves as a showcase of modern software engineering practices, including modular architecture, service-oriented design, prompt engineering, AI integration, session state management, scalable project organization, and production-ready Python development.
+## 🚧 Next — v3.1 Persistence
+- [ ] User accounts (Streamlit OIDC login or Supabase auth)
+- [ ] Save learning sessions, bookmarks and flashcard progress to a database (SQLite → Postgres/Supabase)
+- [ ] Learning history and "continue where you left off"
+- [ ] Spaced-repetition scheduling for flashcards (SM-2)
+
+## 🔭 v3.2 Long videos & RAG
+- [ ] Transcript chunking + embeddings (`gemini-embedding-2`) for videos beyond the context budget
+- [ ] Semantic transcript search
+- [ ] Gemini context caching for long chat sessions (cheaper multi-turn)
+
+## 🔭 v3.3 More sources & richer study
+- [ ] Playlists and multi-video study packs
+- [ ] PDFs / lecture slides alongside the video
+- [ ] Mind-map / concept-graph view of the notes
+- [ ] Natural Gemini TTS voices as an alternative to gTTS
+- [ ] Learning streaks, achievements, progress analytics dashboard
+
+## 🔧 Engineering backlog
+- [ ] Structured JSON schemas (`response_schema`) for quiz/flashcards
+- [ ] Background generation of quiz + flashcards while the user reads notes
+- [ ] Error monitoring (Sentry) and usage analytics
+- [ ] End-to-end browser tests (Playwright)

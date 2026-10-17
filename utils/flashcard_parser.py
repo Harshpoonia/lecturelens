@@ -1,65 +1,52 @@
 """
 utils/flashcard_parser.py
 
-Parses Gemini's JSON flashcard output into Flashcard model objects.
-
-This is a dedicated parser, intentionally separate from quiz_parser.py,
-per the v2.2 requirement that flashcards have their own pipeline
-rather than reusing quiz code.
+Parses Gemini's JSON flashcard output into Flashcard objects.
+Kept separate from quiz_parser.py: flashcards have their own pipeline.
 """
 
-import json
-import re
+from __future__ import annotations
 
 from models.flashcard import Flashcard
+from utils.json_utils import extract_json_list
 
-_CODE_FENCE_PATTERN = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
-_VALID_DIFFICULTIES = {"Easy", "Medium", "Hard"}
+_VALID_DIFFICULTIES = {"easy": "Easy", "medium": "Medium", "hard": "Hard"}
 
 
 def parse_flashcard_json(raw_response: str) -> list[Flashcard]:
-    """
-    Parse raw JSON text (possibly wrapped in Markdown code fences)
-    into a list of Flashcard objects.
-
-    Raises ValueError if the response cannot be parsed or does not
-    match the expected schema.
-    """
-    cleaned = _strip_code_fences(raw_response).strip()
-
     try:
-        data = json.loads(cleaned)
-    except json.JSONDecodeError as exc:
+        data = extract_json_list(raw_response, preferred_keys=("flashcards", "cards"))
+    except ValueError as exc:
         raise ValueError(f"Failed to parse flashcard JSON from Gemini: {exc}") from exc
 
-    if not isinstance(data, list):
-        raise ValueError("Expected flashcard JSON to be a list of card objects.")
-
     cards: list[Flashcard] = []
-    for i, item in enumerate(data):
+    seen_fronts: set[str] = set()
+    for item in data:
         try:
-            cards.append(_parse_card(item))
-        except (KeyError, TypeError) as exc:
-            raise ValueError(f"Malformed flashcard at index {i}: {exc}") from exc
+            card = _parse_card(item)
+        except (KeyError, TypeError, ValueError):
+            continue
+        key = card.front.casefold()
+        if key in seen_fronts:
+            continue
+        seen_fronts.add(key)
+        cards.append(card)
 
     if not cards:
-        raise ValueError("Gemini returned an empty flashcard list.")
+        raise ValueError("Gemini returned no usable flashcards.")
 
     return cards
 
 
 def _parse_card(item: dict) -> Flashcard:
-    front = item["front"]
-    back = item["back"]
-    topic = item.get("topic", "General")
-    difficulty = item.get("difficulty")
+    if not isinstance(item, dict):
+        raise TypeError("card is not an object")
+    front = str(item["front"]).strip()
+    back = str(item["back"]).strip()
+    if not front or not back:
+        raise ValueError("empty card face")
 
-    if difficulty is not None and difficulty not in _VALID_DIFFICULTIES:
-        # Don't hard-fail on a minor schema deviation; normalize instead.
-        difficulty = None
+    topic = str(item.get("topic") or "General").strip()
+    difficulty = _VALID_DIFFICULTIES.get(str(item.get("difficulty", "")).strip().lower())
 
     return Flashcard(front=front, back=back, topic=topic, difficulty=difficulty)
-
-
-def _strip_code_fences(text: str) -> str:
-    return _CODE_FENCE_PATTERN.sub("", text)

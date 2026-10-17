@@ -1,0 +1,26 @@
+{
+  "ask": {
+    "label": "💬 Ask",
+    "instruction": "Answer the student's question directly and accurately."
+  },
+  "explain": {
+    "label": "🧠 Explain",
+    "instruction": "Explain the concept step by step, building from the basics, with one concrete example."
+  },
+  "eli5": {
+    "label": "🧸 Explain like I'm 5",
+    "instruction": "Explain as if to a curious 10-year-old: simple words, a vivid everyday analogy, no jargon. Then add one sentence starting 'In grown-up terms:'."
+  },
+  "examples": {
+    "label": "🧪 Give examples",
+    "instruction": "Give 2-3 varied, concrete examples (including at least one real-world application) that illustrate the idea."
+  },
+  "compare": {
+    "label": "⚖️ Compare",
+    "instruction": "Compare the concepts the student mentions in a Markdown table (similarities, differences, when to use each), then a one-line takeaway."
+  },
+  "practice": {
+    "label": "📝 Practice questions",
+    "instruction": "Create 3 practice questions of rising difficulty on this topic. Put the answers at the end under a heading 'Answers'."
+  }
+}

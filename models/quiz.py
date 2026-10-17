@@ -1,46 +1,31 @@
 """
 models/quiz.py
 
-Data models representing quiz questions and quiz state.
-Contains no business logic — only structure.
+Quiz questions and per-question answer records.
 """
 
-from dataclasses import dataclass, field
+from __future__ import annotations
+
+from dataclasses import dataclass
 
 
 @dataclass
 class QuizQuestion:
-    """Represents a single multiple-choice quiz question."""
-
     question: str
     options: list[str]
     correct_answer: str
     explanation: str
+    difficulty: str | None = None
+    timestamp_seconds: int | None = None
 
-    def is_correct(self, selected_option: str) -> bool:
+    def is_correct(self, selected_option: str | None) -> bool:
+        if selected_option is None:
+            return False
         return selected_option.strip() == self.correct_answer.strip()
 
 
 @dataclass
-class QuizState:
-    """Represents the in-progress state of a quiz session."""
-
-    questions: list[QuizQuestion] = field(default_factory=list)
-    current_index: int = 0
-    score: int = 0
-    answered: bool = False
-    selected_option: str | None = None
-
-    @property
-    def total_questions(self) -> int:
-        return len(self.questions)
-
-    @property
-    def is_complete(self) -> bool:
-        return self.current_index >= self.total_questions
-
-    @property
-    def current_question(self) -> QuizQuestion | None:
-        if self.is_complete:
-            return None
-        return self.questions[self.current_index]
+class QuizAnswer:
+    question_index: int
+    selected_option: str
+    is_correct: bool
