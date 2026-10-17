@@ -19,7 +19,7 @@ from utils.time_utils import format_timestamp
 
 
 def render_transcript_tab(t: TranscriptData) -> None:
-    st.markdown("##### 📊 Transcript analytics")
+    st.markdown("#### Transcript analytics")
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Words", f"{t.word_count:,}")
     c2.metric("Characters", f"{t.char_count:,}")
@@ -33,7 +33,7 @@ def render_transcript_tab(t: TranscriptData) -> None:
         st.bar_chart(chart, horizontal=True, height=320)
 
     st.divider()
-    st.markdown("##### 📜 Transcript")
+    st.markdown("#### Transcript")
     query = st.text_input("Search the transcript", placeholder="Type a word or phrase…", key=f"tsearch_{st.session_state.run_id}")
 
     if t.segments:
@@ -71,7 +71,7 @@ def render_transcript_tab(t: TranscriptData) -> None:
 
     base = safe_filename(t.display_title, "transcript")
     d1, d2, _ = st.columns([1, 1, 3])
-    d1.download_button("⬇️ .txt", transcript_txt(t), file_name=f"{base}.txt", mime="text/plain", width="stretch")
+    d1.download_button(".txt", icon=":material/download:", data=transcript_txt(t), file_name=f"{base}.txt", mime="text/plain", width="stretch")
     srt = transcript_srt(t)
     if srt:
-        d2.download_button("⬇️ .srt", srt, file_name=f"{base}.srt", mime="application/x-subrip", width="stretch")
+        d2.download_button(".srt", icon=":material/download:", data=srt, file_name=f"{base}.srt", mime="application/x-subrip", width="stretch")

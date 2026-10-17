@@ -41,7 +41,7 @@ def render_learn_tab(cfg: AIConfig, t: TranscriptData) -> None:
                 ai_error_card(AIServiceError(error["message"], code=error["code"]))
             else:
                 error_card("Couldn't structure the notes", error["message"], "The model's answer wasn't in the expected format. Retrying usually fixes it.")
-            if st.button("🔄 Try again", key="learn_retry"):
+            if st.button("Try again", key="learn_retry", icon=":material/refresh:"):
                 st.session_state.learning_error = None
                 ensure_learning_content(cfg, t)
                 st.rerun()
@@ -67,7 +67,7 @@ def render_learn_tab(cfg: AIConfig, t: TranscriptData) -> None:
 
     if col_chapters is not None:
         with col_chapters:
-            st.markdown("**🧭 Chapters**")
+            st.markdown('<div class="ll-eyebrow">Chapters</div>', unsafe_allow_html=True)
             for i, chapter in enumerate(content.chapters):
                 if t.duration_seconds and chapter.seconds > t.duration_seconds + 5:
                     continue
@@ -78,7 +78,7 @@ def render_learn_tab(cfg: AIConfig, t: TranscriptData) -> None:
 
     with st.expander("Not quite right?"):
         st.caption("Regenerate the notes, or change the output language / model in the sidebar first.")
-        if st.button("🔄 Regenerate notes", key="learn_regen"):
+        if st.button("Regenerate notes", key="learn_regen", icon=":material/refresh:"):
             st.session_state.learning = None
             st.session_state.learning_nonce += 1
             ensure_learning_content(cfg, t)

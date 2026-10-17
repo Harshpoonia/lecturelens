@@ -12,6 +12,7 @@ import streamlit as st
 from config import ENV_FILE, OUTPUT_LANGUAGES, settings
 from ui.services import AIConfig
 from ui.state import reset_video_state
+from ui.styles import brand_html
 
 CAPTION_LANGUAGES = {
     "en": "English", "hi": "Hindi", "es": "Spanish", "fr": "French", "de": "German",
@@ -22,9 +23,19 @@ CAPTION_LANGUAGES = {
 
 def render_sidebar() -> tuple[AIConfig, tuple[str, ...]]:
     with st.sidebar:
-        st.markdown("### ⚙️ Settings")
+        st.markdown(brand_html(settings.app_title), unsafe_allow_html=True)
 
+        if st.session_state.transcript is not None:
+            if st.button("New video", width="stretch", icon=":material/add:", key="new_video"):
+                reset_video_state()
+                st.rerun()
+
+        _recent_section()
+
+        st.markdown('<div class="ll-eyebrow">Gemini</div>', unsafe_allow_html=True)
         api_key, uses_own_key = _api_key_section()
+
+        st.markdown('<div class="ll-eyebrow">Settings</div>', unsafe_allow_html=True)
 
         model = st.selectbox(
             "Gemini model",
@@ -45,18 +56,14 @@ def render_sidebar() -> tuple[AIConfig, tuple[str, ...]]:
             help="Used to pick between caption tracks. Any available language is used as a fallback.",
         )
 
-        _recent_section()
-
-        if st.session_state.transcript is not None:
-            st.divider()
-            if st.button("➕ Analyze another video", width="stretch"):
-                reset_video_state()
-                st.rerun()
-
         st.divider()
         if not uses_own_key and settings.session_ai_call_limit > 0 and api_key:
-            used = st.session_state.ai_calls
-            st.caption(f"Shared demo key · {used}/{settings.session_ai_call_limit} AI requests used this session")
+            used, limit = st.session_state.ai_calls, settings.session_ai_call_limit
+            st.markdown(
+                f'<div class="ll-meter-row"><span>Demo requests</span><span>{used} / {limit}</span></div>'
+                f'<div class="ll-meter"><div style="width:{min(100, round(100 * used / limit))}%"></div></div>',
+                unsafe_allow_html=True,
+            )
         links = "[Get a free Gemini key](https://aistudio.google.com/apikey)"
         if settings.github_url:
             links += f" · [Source on GitHub]({settings.github_url})"
@@ -74,10 +81,12 @@ def render_sidebar() -> tuple[AIConfig, tuple[str, ...]]:
 def _api_key_section() -> tuple[str, bool]:
     if settings.has_server_api_key:
         if not settings.allow_user_api_key:
-            st.success("Gemini connected", icon="✅")
+            st.markdown(_status("Connected · server key"), unsafe_allow_html=True)
             return settings.gemini_api_key, False
-        with st.expander("🔑 Gemini API key", expanded=False):
-            st.caption("This app has a shared key. Add your own for unlimited use — it stays in this browser session only.")
+        own = st.session_state.get("user_api_key", "") or ""
+        st.markdown(_status("Connected · your key" if own.strip() else "Connected · server key"), unsafe_allow_html=True)
+        with st.expander("Use my own key", expanded=False, icon=":material/key:"):
+            st.caption("Add your own key for unlimited use — it stays in this browser session only.")
             own = st.text_input("Your Gemini API key (optional)", type="password", key="user_api_key")
         if own.strip():
             return own.strip(), True
@@ -88,14 +97,17 @@ def _api_key_section() -> tuple[str, bool]:
         return "", False
 
     own = st.text_input(
-        "🔑 Gemini API key",
+        "Gemini API key",
         type="password",
         key="user_api_key",
         placeholder="AIza…",
         help="Free from Google AI Studio. Used only for your session and never stored.",
     )
-    if not own.strip():
-        st.info("Add a Gemini API key to start. [Get one free →](https://aistudio.google.com/apikey)")
+    if own.strip():
+        st.markdown(_status("Connected · your key"), unsafe_allow_html=True)
+    else:
+        st.markdown(_status("Add a key to start", warn=True), unsafe_allow_html=True)
+        st.caption("[Get a free key from Google AI Studio →](https://aistudio.google.com/apikey)")
         if ENV_FILE.exists():
             st.caption(
                 "A .env file exists but no GEMINI_API_KEY was read from it. Check the line is "
@@ -104,12 +116,15 @@ def _api_key_section() -> tuple[str, bool]:
     return own.strip(), True
 
 
+def _status(text: str, warn: bool = False) -> str:
+    return f'<div class="ll-status{" warn" if warn else ""}"><span class="ll-dot"></span>{text}</div>'
+
+
 def _recent_section() -> None:
     recent = st.session_state.recent
     if not recent:
         return
-    st.divider()
-    st.markdown("**🕘 Recent videos**")
+    st.markdown('<div class="ll-eyebrow">Recent</div>', unsafe_allow_html=True)
     current = st.session_state.transcript.video_id if st.session_state.transcript else None
     for item in recent:
         label = item["title"] if len(item["title"]) <= 42 else item["title"][:40] + "…"
@@ -117,3 +132,4 @@ def _recent_section() -> None:
                      disabled=item["video_id"] == current):
             st.session_state.pending_load = {"kind": "youtube", "url": item["url"]}
             st.rerun()
+    st.write("")

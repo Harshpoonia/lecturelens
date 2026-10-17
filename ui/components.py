@@ -15,7 +15,7 @@ from utils.time_utils import format_timestamp
 
 def error_card(title: str, message: str = "", help_text: str = "") -> None:
     with st.container(border=True):
-        st.error(f"**{title}**", icon="⚠️")
+        st.error(f"**{title}**", icon=":material/error:")
         if help_text:
             st.write(help_text)
         if message:
@@ -37,5 +37,5 @@ def jump_buttons(seconds_list: list[int], key_prefix: str, max_seconds: float | 
         with columns[i]:
             if st.button(f"▶ {format_timestamp(seconds)}", key=f"{key_prefix}_{i}_{seconds}", width="stretch"):
                 jump_to(seconds)
-                st.toast(f"Video jumped to {format_timestamp(seconds)} ↑")
+                st.toast(f"Video jumped to {format_timestamp(seconds)}", icon=":material/play_circle:")
                 st.rerun()

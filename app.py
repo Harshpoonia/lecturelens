@@ -67,7 +67,7 @@ def main() -> None:
 
     st.write("")
     learn, chat, quiz, cards, text, export = st.tabs(
-        ["📘 Study notes", "💬 Chat with video", "📝 Quiz", "🗂️ Flashcards", "📜 Transcript & stats", "📤 Export & audio"]
+        ["Study notes", "Chat", "Quiz", "Flashcards", "Transcript", "Export & audio"]
     )
     for tab, render in (
         (learn, lambda: render_learn_tab(cfg, transcript)),
@@ -90,7 +90,7 @@ def _safe_render(render) -> None:
         if "Rerun" in name or "Stop" in name:
             raise  # st.rerun() / st.stop() work by raising — let them through
         logging.getLogger(__name__).exception("Tab failed to render")
-        st.error("Something went wrong in this tab. The other tabs still work.", icon="⚠️")
+        st.error("Something went wrong in this tab. The other tabs still work.", icon=":material/error:")
         with st.expander("Technical details"):
             st.exception(exc)
 

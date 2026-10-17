@@ -32,18 +32,22 @@ def render_video_header(t: TranscriptData) -> None:
             f'<span class="badge neutral">{html.escape(t.language)}</span>',
             unsafe_allow_html=True,
         )
-        st.write("")
-        m1, m2, m3 = st.columns(3)
-        m1.metric("Duration", format_timestamp(t.duration_seconds) if t.duration_seconds else "—")
-        m2.metric("Words", f"{t.word_count:,}")
-        m3.metric("Read time", f"{t.reading_time_minutes} min")
+        duration = format_timestamp(t.duration_seconds) if t.duration_seconds else "—"
+        st.markdown(
+            '<div class="ll-stats">'
+            f'<div class="ll-stat"><small>Duration</small><b>{duration}</b></div>'
+            f'<div class="ll-stat"><small>Words</small><b>{t.word_count:,}</b></div>'
+            f'<div class="ll-stat"><small>Read time</small><b>{t.reading_time_minutes} min</b></div>'
+            "</div>",
+            unsafe_allow_html=True,
+        )
 
         if t.char_count > settings.max_transcript_chars:
             share = round(100 * settings.max_transcript_chars / t.char_count)
             st.warning(
                 f"Long video: the AI uses the first ~{share}% of the transcript. "
                 "Raise MAX_TRANSCRIPT_CHARS to include more.",
-                icon="✂️",
+                icon=":material/content_cut:",
             )
 
 

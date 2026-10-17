@@ -38,7 +38,7 @@ def render_flashcards_tab(cfg: AIConfig, t: TranscriptData) -> None:
     st.progress(len(known) / len(cards), text=f"Mastered {len(known)} of {len(cards)} cards")
 
     if not deck:
-        st.success("You've mastered every card in this deck! 🎉")
+        st.success("You've mastered every card in this deck!", icon=":material/celebration:")
         if st.button("Reset progress"):
             st.session_state.fc_known = set()
             st.rerun()
@@ -53,27 +53,27 @@ def render_flashcards_tab(cfg: AIConfig, t: TranscriptData) -> None:
     if card.difficulty:
         caption.append(card.difficulty)
     if deck[pos] in known:
-        caption.append("✅ known")
+        caption.append("known")
     st.caption(" · ".join(caption))
 
     face = html.escape(card.back if flipped else card.front).replace("\n", "<br>")
     st.markdown(
-        f'<div class="flashcard {"back" if flipped else ""}">'
+        f'<div class="ll-deck"><div class="flashcard {"back" if flipped else ""}">'
         f'<div class="face-label">{"Answer" if flipped else "Question"}</div>'
-        f'<div class="face-text">{face}</div></div>',
+        f'<div class="face-text">{face}</div></div></div>',
         unsafe_allow_html=True,
     )
     st.write("")
 
     c1, c2, c3, c4 = st.columns(4)
-    if c1.button("⬅️ Previous", disabled=pos == 0, width="stretch"):
+    if c1.button("Previous", disabled=pos == 0, width="stretch", icon=":material/arrow_back:"):
         _move(-1)
-    if c2.button("🔄 Flip", type="primary", width="stretch"):
+    if c2.button("Flip", type="primary", width="stretch", icon=":material/flip:"):
         st.session_state.fc_flipped = not flipped
         st.rerun()
-    if c3.button("Next ➡️", disabled=pos >= len(deck) - 1, width="stretch"):
+    if c3.button("Next", disabled=pos >= len(deck) - 1, width="stretch", icon=":material/arrow_forward:"):
         _move(1)
-    if c4.button("🔀 Shuffle", width="stretch"):
+    if c4.button("Shuffle", width="stretch", icon=":material/shuffle:"):
         random.shuffle(st.session_state.fc_order)
         st.session_state.fc_pos = 0
         st.session_state.fc_flipped = False
@@ -81,10 +81,10 @@ def render_flashcards_tab(cfg: AIConfig, t: TranscriptData) -> None:
 
     if flipped:
         k1, k2 = st.columns(2)
-        if k1.button("✅ I knew it", width="stretch"):
+        if k1.button("I knew it", width="stretch", icon=":material/check_circle:"):
             known.add(deck[pos])
             _advance_after_mark(deck, pos, only_learning)
-        if k2.button("🔁 Still learning", width="stretch"):
+        if k2.button("Still learning", width="stretch", icon=":material/replay:"):
             known.discard(deck[pos])
             _advance_after_mark(deck, pos, only_learning)
     else:
@@ -92,7 +92,7 @@ def render_flashcards_tab(cfg: AIConfig, t: TranscriptData) -> None:
 
     with st.expander("Deck options"):
         n = st.slider("Cards in a new deck", 5, 30, len(cards), key="fc_n_regen")
-        if st.button("✨ Generate a new deck"):
+        if st.button("Generate a new deck", icon=":material/auto_awesome:"):
             st.session_state.fc_nonce += 1
             _generate(cfg, t, n)
 
@@ -114,7 +114,7 @@ def _advance_after_mark(deck: list[int], pos: int, only_learning: bool) -> None:
 def _render_setup(cfg: AIConfig, t: TranscriptData) -> None:
     st.markdown("Turn the video into a flashcard deck for spaced revision.")
     n = st.slider("Number of flashcards", 5, 30, 12, key="fc_n")
-    if st.button("🗂️ Generate flashcards", type="primary"):
+    if st.button("Generate flashcards", type="primary", icon=":material/style:"):
         _generate(cfg, t, n)
 
 

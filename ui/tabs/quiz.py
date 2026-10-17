@@ -61,11 +61,11 @@ def render_quiz_tab(cfg: AIConfig, t: TranscriptData) -> None:
         return
 
     if question.is_correct(st.session_state.quiz_selected):
-        st.success("Correct! 🎉")
+        st.success("Correct!", icon=":material/check_circle:")
     else:
         st.error(f"Not quite. The correct answer is **{question.correct_answer}**.")
     if question.explanation:
-        st.info(question.explanation, icon="💡")
+        st.info(question.explanation, icon=":material/lightbulb:")
     if question.timestamp_seconds is not None and t.is_youtube:
         st.caption(f"Explained in the video around {format_timestamp(question.timestamp_seconds)}:")
         jump_buttons([question.timestamp_seconds], f"quizjump_{pos}", t.duration_seconds)
@@ -83,7 +83,7 @@ def _render_setup(cfg: AIConfig, t: TranscriptData) -> None:
     col_n, col_d = st.columns(2)
     n = col_n.slider("Number of questions", 3, 15, 5, key="quiz_n")
     difficulty = col_d.selectbox("Difficulty", DIFFICULTY_LEVELS, key="quiz_difficulty")
-    if st.button("📝 Generate quiz", type="primary", key="quiz_generate"):
+    if st.button("Generate quiz", type="primary", key="quiz_generate", icon=":material/quiz:"):
         try:
             with st.spinner("Writing questions…"):
                 questions = services.quiz(cfg, t, n, difficulty, st.session_state.quiz_nonce)
@@ -117,7 +117,7 @@ def _render_results(t: TranscriptData, questions: list[QuizQuestion]) -> None:
 
     if percent == 100:
         st.balloons()
-    headline = "Perfect score! 🏆" if percent == 100 else "Great work! 💪" if percent >= 70 else "Keep going — review and retry 📚"
+    headline = "Perfect score!" if percent == 100 else "Great work!" if percent >= 70 else "Keep going — review and retry 📚"
     st.markdown(f"### {headline}")
     c1, c2, c3 = st.columns(3)
     c1.metric("Score", f"{correct} / {total}")
@@ -129,7 +129,7 @@ def _render_results(t: TranscriptData, questions: list[QuizQuestion]) -> None:
         st.markdown("#### Review what you missed")
         for a in wrong:
             q = questions[a.question_index]
-            with st.expander(f"❌ {q.question}"):
+            with st.expander(q.question, icon=":material/close:"):
                 st.markdown(f"- Your answer: {a.selected_option}\n- Correct: **{q.correct_answer}**")
                 if q.explanation:
                     st.markdown(f"- Why: {q.explanation}")
@@ -137,13 +137,13 @@ def _render_results(t: TranscriptData, questions: list[QuizQuestion]) -> None:
                     jump_buttons([q.timestamp_seconds], f"reviewjump_{a.question_index}", t.duration_seconds)
 
     col_a, col_b, col_c = st.columns(3)
-    if wrong and col_a.button("🔁 Retry missed questions", type="primary", width="stretch"):
+    if wrong and col_a.button("Retry missed questions", type="primary", width="stretch", icon=":material/replay:"):
         _start_round(questions, [a.question_index for a in wrong], retry=True)
         st.rerun()
-    if col_b.button("↺ Restart quiz", width="stretch"):
+    if col_b.button("Restart quiz", width="stretch", icon=":material/restart_alt:"):
         _start_round(questions, list(range(len(questions))))
         st.rerun()
-    if col_c.button("✨ New quiz", width="stretch"):
+    if col_c.button("New quiz", width="stretch", icon=":material/auto_awesome:"):
         st.session_state.quiz = None
         st.session_state.quiz_nonce += 1
         st.rerun()

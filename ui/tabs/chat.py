@@ -42,7 +42,7 @@ def render_chat_tab(cfg: AIConfig, t: TranscriptData) -> None:
     box = st.container(height=520, border=True) if history else st.container()
     with box:
         for i, message in enumerate(history):
-            with st.chat_message(message.role, avatar="🧑‍🎓" if message.role == "user" else "🎓"):
+            with st.chat_message(message.role, avatar=":material/person:" if message.role == "user" else ":material/school:"):
                 st.markdown(_render_text(message.content, t))
                 if message.role == "assistant" and t.is_youtube:
                     jump_buttons(find_timestamps(message.content), f"chatjump_{st.session_state.run_id}_{i}", t.duration_seconds)
@@ -61,7 +61,7 @@ def render_chat_tab(cfg: AIConfig, t: TranscriptData) -> None:
 
     if history:
         col_a, col_b = st.columns([1, 5])
-        if col_a.button("🧹 Clear chat", key="chat_clear"):
+        if col_a.button("Clear chat", key="chat_clear", icon=":material/delete_sweep:"):
             st.session_state.chat = []
             st.rerun()
         col_b.caption("Answers come from the video's transcript. Timestamps jump the player to that moment.")
@@ -74,9 +74,9 @@ def _render_text(text: str, t: TranscriptData) -> str:
 def _answer(cfg: AIConfig, t: TranscriptData, question: str, mode: str, box) -> None:
     history: list[ChatMessage] = st.session_state.chat
     with box:
-        with st.chat_message("user", avatar="🧑‍🎓"):
+        with st.chat_message("user", avatar=":material/person:"):
             st.markdown(question)
-        with st.chat_message("assistant", avatar="🎓"):
+        with st.chat_message("assistant", avatar=":material/school:"):
             try:
                 stream = services.chat_service(cfg).stream_answer(
                     t, history, question, mode=mode, output_language=cfg.output_language
@@ -100,7 +100,7 @@ def _render_suggestions(cfg: AIConfig, t: TranscriptData) -> None:
             st.rerun()
 
     if st.session_state.suggested_questions is None:
-        if st.button("✨ Suggest questions about this video", key="suggest_more"):
+        if st.button("Suggest questions about this video", key="suggest_more", icon=":material/auto_awesome:"):
             try:
                 with st.spinner("Reading the video…"):
                     st.session_state.suggested_questions = services.suggested_questions(cfg, t) or list(STARTERS)

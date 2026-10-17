@@ -14,7 +14,7 @@ CONTENT = "GEMINI_API_KEY=abc123\nGEMINI_MODEL=gemini-3.5-flash\n"
         b"\xef\xbb\xbf" + CONTENT.encode("utf-8"),          # UTF-8 with BOM (Set-Content -Encoding utf8)
         CONTENT.encode("utf-16"),                            # UTF-16 LE with BOM (echo > .env)
         CONTENT.replace("\n", "\r\n").encode("utf-8"),       # Windows line endings
-        'GEMINI_API_KEY = "abc123"\n'.encode("utf-8"),       # spaces + quotes
+        b'GEMINI_API_KEY = "abc123"\n',       # spaces + quotes
     ],
 )
 def test_env_file_variants_are_read(tmp_path, monkeypatch, raw):

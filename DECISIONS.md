@@ -55,6 +55,7 @@ Decisions are grouped by area. IDs (`D-01`…) are stable so they can be referen
 | D-36 | Quality | Test strategy and CI |
 | D-37 | Docs | Rewrite README, roadmap, add changelog + deployment guide |
 | D-38 | Brand | Rename the product to **LectureLens** |
+| D-39 | UI | "Night Study Desk" dark theme |
 
 ---
 
@@ -355,6 +356,15 @@ Git history keeps everything if it's ever needed.
 - **Decision:** Product name **LectureLens**, descriptor "AI Video Learning Platform". Used for the app title (`APP_TITLE` default), page title and icon, hero, exports, README, roadmap, Render service and package name. The hero renders it as "Lecture" + accent "Lens". The design mock-ups use a lens-with-play-button mark.
 - **Alternatives:** StudyStream AI, VidMentor, Lecturely, EduLens AI — LectureLens was clearest in two seconds and works as a repo name (`lecturelens`).
 - **Consequences:** The Git repo and local folder can keep the old name or be renamed on GitHub (old links redirect). "YouTube" still appears in descriptions ("for YouTube lectures"), which is allowed.
+
+---
+
+### D-39 — "Night Study Desk" dark theme
+
+- **Context:** The first UI used Streamlit's default light look with emoji everywhere; it read as a template rather than a product.
+- **Decision:** A dark theme designed on a canvas first, then built in Streamlit: ink-black ground (#0D0E12), charcoal surfaces, one coral accent (#FF6B57, dark text on it for contrast), Space Grotesk headings, IBM Plex Sans body, JetBrains Mono for timestamps and numbers. Tabs restyled as pills, stat cards in the video header, a stacked flashcard deck, brand mark in the sidebar, line-icon feature cards. Emoji replaced by Material icons on buttons and inline SVG icons in custom HTML.
+- **How:** `.streamlit/config.toml` sets the base dark palette; `ui/styles.py` holds all CSS (targeting Streamlit's `data-testid` attributes) plus the `icon()` and `brand_html()` helpers.
+- **Consequences:** CSS that targets Streamlit internals can need small fixes after major Streamlit upgrades; it's all in one file, so that's quick. Fonts load from Google Fonts at runtime.
 
 ---
 
