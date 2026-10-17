@@ -1,134 +1,163 @@
+<div align="center">
+
 # 🔎 LectureLens
 
 ### AI Video Learning Platform
 
-> Turn any YouTube lecture into study notes, a quiz, flashcards and a personal AI tutor — powered by Google Gemini.
+**Turn any YouTube lecture into a study session.**
+Structured notes with clickable chapters · an AI tutor that cites the exact moment · adaptive quizzes · flashcards · in any language.
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue) ![Streamlit](https://img.shields.io/badge/Streamlit-1.58-red) ![Gemini](https://img.shields.io/badge/Google%20Gemini-3.5%20Flash-orange)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-Open_App-FF6B57?style=for-the-badge&logo=streamlit&logoColor=white)](https://lecturelen.streamlit.app)
 
-**Live demo:** _add your Streamlit Cloud / Render URL here_
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-1.58-FF4B4B?logo=streamlit&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google_Gemini-3.5_Flash-4285F4?logo=google&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-72_passing-3FCF8E)
+[![CI](https://github.com/Harshpoonia/lecturelens/actions/workflows/ci.yml/badge.svg)](https://github.com/Harshpoonia/lecturelens/actions/workflows/ci.yml)
 
-Paste a YouTube link and LectureLens fetches the captions (in any language), then generates structured learning material you can read, chat with, test yourself on, listen to and export.
+<br>
+
+<img src="assets/screenshots/workspace.png" alt="LectureLens video workspace: player, stats, study notes and clickable chapters" width="900">
+
+</div>
+
+---
+
+## 📖 Overview
+
+Watching a lecture is easy; learning from it is hard. **LectureLens** fetches a video's captions (in any language) and uses Google Gemini to turn them into material you can actually study with — notes you can navigate by chapter, a tutor you can question, and practice that adapts to what you got wrong.
+
+> Paste a link → read the notes → ask the tutor → test yourself → export or listen.
+
+---
+
+## 📸 Screenshots
+
+<p align="center"><i>Example run on a 10-hour Python course (CodeWithHarry, Hindi) — 102,913 words turned into notes, chapters, a tutor, a quiz and flashcards.</i></p>
+
+<table>
+  <tr>
+    <td width="50%" valign="top"><b>Landing page</b><br><img src="assets/screenshots/home.png" alt="Landing page"></td>
+    <td width="50%" valign="top"><b>Key points + clickable chapters</b><br><img src="assets/screenshots/notes.png" alt="Key points and chapters"></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><b>AI tutor</b> — answers in the video's language (Hinglish here) and cites timestamps you can jump to<br><img src="assets/screenshots/chat.png" alt="Chat with the video"></td>
+    <td width="50%" valign="top"><b>Quiz</b> — instant feedback, explanation and the moment it's explained in the video<br><img src="assets/screenshots/quiz.png" alt="Quiz"></td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top"><b>Flashcards</b> — flip, shuffle, track mastery<br><img src="assets/screenshots/flashcards.png" alt="Flashcards"></td>
+    <td width="50%" valign="top"><b>Exported study pack (PDF)</b><br>Summary, key points, notes, concepts, chapters and flashcards in one file.<br><br>📄 <a href="assets/samples/study-pack-python-course.pdf"><b>View the sample PDF</b></a></td>
+  </tr>
+</table>
 
 ---
 
 ## ✨ Features
 
-### 📘 Study notes
-- Executive summary, key points, detailed study notes and important concepts
-- **Clickable video chapters** — jump the embedded player to any section
-- Timestamps inside notes link straight to that moment of the video
-- Generate the material **in another language** than the video (Hindi, Spanish, …)
+| | Feature | What it does |
+|---|---|---|
+| 📘 | **Study notes** | Executive summary, key points, detailed notes and a glossary of concepts — generated in the video's language or one you choose |
+| 🧭 | **Clickable chapters** | Auto-generated chapters and timestamps that jump the embedded player to that moment |
+| 💬 | **Chat with the video** | Streaming AI tutor grounded in the transcript; every answer cites `[mm:ss]` timestamps. Modes: *Explain · ELI5 · Examples · Compare · Practice questions* |
+| 📝 | **Adaptive quiz** | Choose 3–15 questions and a difficulty; instant feedback with explanations; review mistakes and **retry only what you missed** |
+| 🗂️ | **Flashcards** | Flip, shuffle, mark *known / still learning*, review only weak cards, export to **Anki** |
+| 📊 | **Transcript & analytics** | Word count, reading time, speaking pace, top terms, and a searchable transcript — click a line to jump there |
+| 🔊 | **Listen** | Text-to-speech for the summary, notes or flashcards |
+| 📤 | **Export** | Study pack as **PDF**, printable **HTML** or **Markdown**, plus quiz reports, chat logs and `.srt` captions |
 
-### 💬 Chat with the video (AI tutor)
-- Multi-turn chat grounded in the transcript, with **streaming answers**
-- Answers cite timestamps like `[04:12]`; one click jumps the player there
-- Tutor modes: **Ask · Explain · Explain like I'm 5 · Examples · Compare · Practice questions**
-- Suggested questions generated from the video
+### Built for real-world use
+- **Works when YouTube blocks the server** — Gemini can watch and transcribe the video, or you can paste a transcript
+- **Multilingual** — captions in any language; output in English, Hindi, Spanish and more
+- **Bring your own key** — visitors can use their own Gemini key; a per-session cap protects the host's quota
+- **Resilient AI calls** — retries with backoff, clear errors for bad keys, retired models and quota limits
+- **Caching** — re-opening a video or switching tabs never re-bills the API
 
-### 📝 Adaptive quiz
-- Choose 3–15 questions and a difficulty (Easy / Medium / Hard / Mixed)
-- One question at a time, instant feedback and explanations
-- "Explained in the video at…" jump buttons
-- Results page with mistakes review and **retry only the questions you missed**
+---
 
-### 🗂️ Flashcards
-- Flip, navigate, shuffle
-- Mark cards **Known / Still learning** and review only the ones you're still learning
-- Export to **Anki**
+## 🛠️ Tech Stack
 
-### 📜 Transcript & analytics
-- Word count, characters, reading time, speaking pace, duration, caption source
-- Most-frequent-terms chart
-- Searchable transcript table — select a row to jump the video there
-- Download as `.txt` or `.srt`
-
-### 📤 Export & audio
-- Study pack as **PDF**, printable **HTML** and **Markdown**
-- Quiz report and chat transcript downloads
-- **Text-to-speech** for the summary, notes, concepts or flashcards (MP3)
-
-### 🛡️ Built for real deployment
-- Works when YouTube blocks cloud servers: **Gemini can watch the video and transcribe it**, or you can paste a transcript
-- **Bring-your-own-key**: visitors can use their own free Gemini key; a per-session request cap protects yours
-- Automatic **retries with backoff** for rate limits and overloads, clear error messages for bad keys, retired models and quota
-- **Caching** of transcripts and AI output — revisiting a video or switching tabs costs nothing
-- Docker image, Render blueprint, GitHub Actions CI and a test suite
+| Layer | Technology |
+|---|---|
+| Language | Python 3.10+ |
+| UI | Streamlit (custom dark theme) |
+| AI | Google Gemini (`google-genai`) — text, streaming and video understanding |
+| Captions | `youtube-transcript-api` |
+| Export / audio | `fpdf2`, `gTTS` |
+| Quality | `pytest` (72 tests), `ruff`, GitHub Actions CI |
+| Deploy | Streamlit Community Cloud · Docker · Render |
 
 ---
 
 ## 🏛️ Architecture
 
 ```text
-                       app.py  (wires views together)
-                          │
-          ┌───────────────┼──────────────────────────┐
-          ▼               ▼                          ▼
-     ui/sidebar      ui/home  (input + loading)   ui/tabs/*  learn · chat · quiz
-          │               │                          │        flashcards · transcript · export
-          └───────────────┴─────────┬────────────────┘
-                                    ▼
-                          ui/services.py  (session wiring + st.cache_*)
-                                    │
-     ┌──────────────┬───────────────┼───────────────┬──────────────┬──────────────┐
-     ▼              ▼               ▼               ▼              ▼              ▼
- transcript   video_transcriber  LearningService  QuizService  FlashcardService  ChatService
- (captions)   (Gemini fallback)        │               │              │              │
-     │              └──────────────────┴───────┬───────┴──────────────┴──────────────┘
-     ▼                                         ▼
- youtube-transcript-api                 AIService ──► Google Gemini API
-                                    (retries, error codes, streaming, video input)
+ app.py ──► ui/ (sidebar · home · tabs: notes, chat, quiz, flashcards, transcript, export)
+               │
+               ▼
+          ui/services.py  ── session wiring + caching
+               │
+   ┌───────────┼────────────┬──────────────┬──────────────┐
+   ▼           ▼            ▼              ▼              ▼
+transcript  LearningService QuizService FlashcardService ChatService
+(captions)        └────────────┴───────┬──────┴──────────────┘
+   │                                   ▼
+   ▼                         AIService ──► Google Gemini API
+youtube-transcript-api       (retries · error codes · streaming · video input)
 
- prompts/*.txt  → all prompt engineering        utils/*  → parsers, text & time helpers
- models/*       → plain dataclasses              modules/export_service, tts_service → downloads & audio
+prompts/  → all prompt templates        utils/  → parsers, text & time helpers
+models/   → dataclasses                 modules/export_service, tts_service
 ```
 
-**Rules the codebase follows**
-- `app.py` and `ui/` only render and manage session state.
-- Business logic lives in `modules/`; no Streamlit imports there.
-- Prompts live only in `prompts/`; parsing only in `utils/`.
-- `config.py` is the only place that reads environment variables / secrets.
+- **Separation of concerns:** UI only renders; business logic lives in `modules/` with no Streamlit imports.
+- **Prompts as files:** every prompt is in `prompts/`, never hard-coded.
+- **One config entry point:** `config.py` reads `.env` and Streamlit secrets.
+
+See [DECISIONS.md](DECISIONS.md) for the reasoning behind each design choice.
 
 ---
 
-## 📂 Project structure
+## 🚀 Getting Started
 
-```text
-youtube-ai-learning-assistant/
-├── app.py                     # Streamlit entry point
-├── config.py                  # settings from env / Streamlit secrets
-├── requirements.txt           # runtime deps   (requirements-dev.txt adds pytest + ruff)
-├── packages.txt               # apt packages for Streamlit Cloud (PDF fonts)
-├── Dockerfile · render.yaml   # container + one-click Render deploy
-├── .streamlit/config.toml     # theme + server settings
-├── models/                    # transcript, learning_content, quiz, flashcard, chat
-├── modules/                   # ai_service, transcript, video_transcriber, youtube,
-│                              # learning/quiz/flashcard/chat services, export, tts
-├── prompts/                   # learning, quiz, flashcard, chat, suggestions, transcription
-├── ui/                        # sidebar, home, video header, styles, tabs/
-├── utils/                     # parsers, json, text cleaning/statistics, time helpers
-└── tests/                     # pytest suite (+ Streamlit AppTest smoke test)
-```
+### Prerequisites
+- Python 3.10 or newer
+- A free Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
 
----
-
-## 🚀 Run locally
+### Installation
 
 ```bash
-git clone https://github.com/<your-username>/youtube-ai-learning-assistant.git
-cd youtube-ai-learning-assistant
+git clone https://github.com/Harshpoonia/lecturelens.git
+cd lecturelens
 
 python -m venv venv
-# Windows: venv\Scripts\activate     macOS/Linux: source venv/bin/activate
-pip install -r requirements.txt
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
 
-cp .env.example .env        # then put your Gemini key in .env
+pip install -r requirements.txt
+```
+
+### Configuration
+
+```bash
+cp .env.example .env      # Windows: copy .env.example .env
+```
+
+Open `.env` and add your key:
+
+```env
+GEMINI_API_KEY=your-key-here
+```
+
+### Run
+
+```bash
 streamlit run app.py
 ```
 
-Get a free key at [aistudio.google.com/apikey](https://aistudio.google.com/apikey). You can also leave `.env` empty and paste a key into the sidebar.
+Open http://localhost:8501, paste a YouTube link, and click **Analyze**.
 
-### Run the tests
+### Tests
 
 ```bash
 pip install -r requirements-dev.txt
@@ -138,56 +167,72 @@ ruff check .
 
 ---
 
-## ☁️ Deploy
+## ☁️ Deployment
 
-See **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step guides:
+| Platform | Steps |
+|---|---|
+| **Streamlit Community Cloud** (recommended) | Connect the repo → main file `app.py` → add `GEMINI_API_KEY` in **Secrets** → Deploy |
+| **Render** | New → Blueprint → select repo (uses `render.yaml`) |
+| **Docker** | `docker build -t lecturelens . && docker run -p 8501:8501 -e GEMINI_API_KEY=... lecturelens` |
 
-| Platform | Effort | Notes |
-|---|---|---|
-| Streamlit Community Cloud | ~5 min, free | Easiest. Add secrets in the dashboard. |
-| Render (Docker) | ~10 min, free tier | `render.yaml` blueprint included. |
-| Hugging Face Spaces / Railway / Cloud Run | ~10 min | Use the Dockerfile. |
+Full guide, including handling YouTube's cloud-IP blocking: [DEPLOYMENT.md](DEPLOYMENT.md)
 
-> YouTube blocks caption downloads from most cloud IPs. The app handles this by offering **Gemini video transcription** or **paste a transcript**. For fully automatic captions in production, add a residential proxy (see DEPLOYMENT.md).
-
----
-
-## ⚙️ Configuration
+<details>
+<summary><b>Configuration options</b></summary>
 
 | Variable | Default | Purpose |
 |---|---|---|
 | `GEMINI_API_KEY` | — | Server-side key (optional if visitors bring their own) |
 | `GEMINI_MODEL` | `gemini-3.5-flash` | Default model |
-| `GEMINI_MODEL_CHOICES` | `gemini-3.5-flash,gemini-3.1-flash-lite` | Models offered in the sidebar |
-| `ALLOW_USER_API_KEY` | `true` | Let visitors paste their own key |
-| `SESSION_AI_CALL_LIMIT` | `40` | Max AI requests per visitor session on your key (0 = unlimited) |
+| `ALLOW_USER_API_KEY` | `true` | Let visitors use their own key |
+| `SESSION_AI_CALL_LIMIT` | `40` | AI requests per visitor session on the host key (0 = unlimited) |
 | `ENABLE_GEMINI_VIDEO_FALLBACK` | `true` | Offer Gemini transcription when captions fail |
 | `TRANSCRIPT_LANGUAGES` | `en,hi` | Preferred caption languages |
 | `MAX_TRANSCRIPT_CHARS` | `200000` | Transcript length sent to the model |
-| `AI_MAX_RETRIES` | `3` | Retries for rate limits / overloads |
 | `CACHE_TTL_SECONDS` | `21600` | How long results stay cached |
-| `WEBSHARE_PROXY_USERNAME` / `_PASSWORD` | — | Residential proxy for captions |
-| `TRANSCRIPT_PROXY_URL` | — | Any HTTP(S) proxy for captions |
-| `GITHUB_URL` | — | Shows a "Source on GitHub" link |
+| `WEBSHARE_PROXY_USERNAME` / `_PASSWORD` | — | Optional residential proxy for captions |
+
+</details>
 
 ---
 
-## 📈 Project evolution
+## 📂 Project Structure
 
-| Version | Highlights |
-|---|---|
-| v1.0 | YouTube video summarizer |
-| v2.0 | Structured learning content, modular architecture |
-| v2.1 | Interactive quiz |
-| v2.2 | Flashcards + architecture refactor |
-| **v3.0** | Chat with video, chapters & timestamp navigation, multi-language output, adaptive quiz, smarter flashcards, export & audio, Gemini fallback, BYOK, retries, caching, Docker/CI, tests |
+```text
+lecturelens/
+├── app.py                 # Streamlit entry point
+├── config.py              # settings from .env / Streamlit secrets
+├── modules/               # AI service, transcript, learning/quiz/flashcard/chat services, export, TTS
+├── models/                # dataclasses: transcript, notes, quiz, flashcard, chat
+├── prompts/               # prompt templates
+├── ui/                    # sidebar, landing page, styles, tabs/
+├── utils/                 # parsers, JSON, text & time helpers
+├── tests/                 # pytest suite
+├── assets/                # README screenshots and a sample exported PDF
+├── .streamlit/config.toml # theme
+├── Dockerfile · render.yaml · packages.txt
+└── DECISIONS.md · DEPLOYMENT.md · CHANGELOG.md · PROJECT_ROADMAP.md
+```
 
-See [PROJECT_ROADMAP.md](PROJECT_ROADMAP.md), [CHANGELOG.md](CHANGELOG.md) and [DECISIONS.md](DECISIONS.md) (why each change was made).
+---
+
+## 🗺️ Roadmap
+
+- [x] Notes, chapters, chat, quiz, flashcards, export, audio
+- [x] Multilingual output, Gemini transcription fallback, caching, CI
+- [ ] User accounts and saved progress
+- [ ] Spaced-repetition scheduling for flashcards
+- [ ] Long-video support with semantic search (RAG)
+- [ ] Playlists and multi-video study packs
+
+Details in [PROJECT_ROADMAP.md](PROJECT_ROADMAP.md) · version history in [CHANGELOG.md](CHANGELOG.md).
 
 ---
 
 ## 👨‍💻 Author
 
-**Harsh Poonia** — MCA student · AI · Machine Learning · Data Analytics
+**Harsh Poonia** — MCA Student · AI · Machine Learning · Data Analytics
 
-If this project helped you, consider giving it a ⭐.
+[![GitHub](https://img.shields.io/badge/GitHub-Harshpoonia-181717?logo=github)](https://github.com/Harshpoonia)
+
+If LectureLens helped you, consider giving it a ⭐ — it really helps!
